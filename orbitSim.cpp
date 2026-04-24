@@ -4,7 +4,19 @@
 #include <vector>
 #include <fstream>
 #include <SFML/Graphics.hpp>
+#include <random>
 using namespace std;
+
+const double g = 1.0;//6.67430e-11;
+const double dt = .25;
+float scale = 2.0f;
+random_device rd;
+mt19937 gen(rd());
+uniform_int_distribution<> starCount(1, 100);
+uniform_int_distribution<> starXPlacement(-960,960);
+uniform_int_distribution<> starYPlacement(-540, 540);
+vector<sf::Vector2f> stars;
+bool draw = true;
 
 struct vect
 {
@@ -42,7 +54,6 @@ double length(const vect& v)
 
   vect computeGravity(const Sphere& planet, const Sphere& sun)
   {
-    const double g = 1.0;//6.67430e-11;
 
     vect dir = sun.pos - planet.pos;
     double dist = length(dir) + 1e-6;
@@ -88,20 +99,63 @@ double length(const vect& v)
     view.setViewport(sf::Rect<float>(sf::Vector2f(posX, posY),sf::Vector2f(sizeX,sizeY)));
   }
 
+  void initializeOrbit(Sphere& p, const Sphere& sun, double dt)
+{
+    double r = length(p.pos);
+    double speed = sqrt(g * sun.mass / r);
+
+    vect dir = {p.pos.y, p.pos.x};
+    p.vel = normalize(dir) * speed;
+
+    vect acc = computeGravity(p, sun);
+    p.prevPos = p.pos - p.vel * dt + acc * (0.5 * dt * dt);
+}
+
+  void drawStars(sf::RenderWindow& window, sf::RectangleShape& star)
+  {
+    star.setFillColor(sf::Color::White);
+          for(int i = 0;i < 2500;i++)
+          {
+            int x = starXPlacement(gen);
+            int y = starYPlacement(gen);
+            stars.push_back(sf::Vector2f(static_cast<float>(x),static_cast<float>(y)));
+          }
+  }
+
+  void orbitPath(sf::VertexArray& trail, Sphere& earth, Sphere& mars)
+  {
+        trail.append({sf::Vector2f(static_cast<float>(earth.pos.x / scale), static_cast<float>(earth.pos.y / scale))});
+        trail.append({sf::Vector2f(static_cast<float>(mars.pos.x / scale), static_cast<float>(mars.pos.y / scale))});
+  }
+
 int main()
 {
-    double dt = .01;
-
     Sphere sun = {{0,0}, {0,0}, {0,0}, 1000};
+    Sphere earth = {{0,-400}, {0,0}, {0,0}, 100};
+    Sphere mars = {{0,-608}, {0,0}, {0,0}, 38};
+    
 
-    Sphere earth = {{0,-100}, {0,0}, {-3.16,0}, 1};
+    initializeOrbit(earth, sun, dt);
+    initializeOrbit(mars, sun, dt);
 
-    earth.prevPos = earth.pos - earth.vel * dt;
+    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1920, 1080)), "Orbit");
+    sf::View view(sf::Vector2f(0.f, 0.f), sf::Vector2f(1920.0f,1080.0f));
 
-    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 800)), "Orbit");
-    sf::View view(sf::Vector2f(400.0f, 400.0f), sf::Vector2f(800.0f,800.0f));
+    sf::VertexArray trail(sf::PrimitiveType::Points);
+    sf::VertexArray marsTrail(sf::PrimitiveType::Points);
+    sf::RectangleShape star({2.0f,2.0f});
 
-    float scale = 2.0f;
+    sf::CircleShape sunShape(10);
+    sunShape.setFillColor(sf::Color(255, 255, 0));
+    sunShape.setOrigin(sf::Vector2f(10.0f,10.0f));
+
+    sf::CircleShape earthShape(5);
+    earthShape.setFillColor(sf::Color(144, 238, 144));
+    earthShape.setOrigin(sf::Vector2(5.0f,5.0f));
+
+    sf::CircleShape marsShape(4.5);
+    marsShape.setFillColor(sf::Color(255, 63, 52));
+    marsShape.setOrigin(sf::Vector2(5.0f,5.0f));
 
     while (window.isOpen())
     {
@@ -111,27 +165,40 @@ int main()
         if (event->is<sf::Event::Closed>())
         window.close();
         }
+
         fixView(window, view);
         window.setView(view);
 
         updateV(earth, sun, dt);
+        updateV(mars, sun, dt);
 
         window.clear();
 
-        // draw sun
-        sf::CircleShape sunShape(5);
+        if(draw)
+        {
+          drawStars(window,star);
+          draw = false;
+        }
 
-        sunShape.setOrigin(sf::Vector2f(5.0,5.0));
-        sunShape.setPosition(sf::Vector2f(400.0, 400.0));
+        for(const auto& starz : stars)
+        {
+          star.setPosition(starz);
+          window.draw(star);
+        }
+
+        sunShape.setPosition(sf::Vector2f(0.0f, 0.f));
         window.draw(sunShape);
 
-        // draw planet
-        sf::CircleShape planetShape(3);
-        float posx = 400.0f + static_cast<float>(earth.pos.x / scale);
-        float posy = 400.0f + static_cast<float>(earth.pos.y / scale);
-        planetShape.setPosition(sf::Vector2f(posx,posy));
-        window.draw(planetShape);
+        earthShape.setPosition(sf::Vector2f(static_cast<float>(earth.pos.x / scale), static_cast<float>(earth.pos.y / scale)));
+        window.draw(earthShape);
 
+        marsShape.setPosition(sf::Vector2f(static_cast<float>(mars.pos.x / scale), static_cast<float>(mars.pos.y / scale)));
+        window.draw(marsShape);
+        
+        orbitPath(trail,earth,mars);
+
+        window.draw(trail);
+        window.draw(marsTrail);
         window.display();
     }
 }
