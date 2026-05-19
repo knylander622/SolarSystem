@@ -7,7 +7,14 @@ Visible Orbit Trails
 Random Star Placement Generation  
   
 # Compile
-Requires sfml 3  (3.1 Preferably)
-https://www.sfml-dev.org/download/  
+Download and run Docker
+https://www.docker.com/products/docker-desktop/
 
-g++ orbitSim.cpp -lsfml-graphics -lsfml-window -lsfml-system -o orbit.exe
+Clone into repository and change into SolarSystem directory
+
+Build docker image with:
+docker build -t solar-system .
+
+Run docker image with:
+docker run --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix solar-system
+
