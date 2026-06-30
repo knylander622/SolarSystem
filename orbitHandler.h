@@ -57,8 +57,8 @@ void updateV(Sphere& planet, const Sphere& sun, double dt);
 void fixView(sf::RenderWindow & window, sf::View&view);
 void initializeOrbit(Sphere& p, const Sphere& sun, double dt);
 void drawStars(sf::RenderWindow& window, sf::RectangleShape& star);
-void orbitPath(sf::VertexArray& trail, Sphere& earth, sf::VertexArray& marsTrail, Sphere& mars, sf::VertexArray& jupiterTrail, Sphere& jupiter, sf::VertexArray& neptuneTrail, Sphere& neptune, sf::RenderWindow& window, float time);
-void drawBody(sf::CircleShape& sunShape, sf::CircleShape& earthShape, sf::CircleShape& marsShape, sf::CircleShape& jupiterShape, sf::CircleShape& neptuneShape, sf::RenderWindow& window);
+void orbitPath(sf::VertexArray& mercuryTrail, Sphere& mercury, sf::VertexArray& venusTrail, Sphere& venus, sf::VertexArray& trail, Sphere& earth, sf::VertexArray& marsTrail, Sphere& mars, sf::VertexArray& jupiterTrail, Sphere& jupiter, sf::VertexArray& saturnTrail, Sphere& saturn, sf::VertexArray& uranusTrail, Sphere& uranus, sf::VertexArray& neptuneTrail, Sphere& neptune, sf::RenderWindow& window, float time);
+void drawBody(sf::CircleShape& sunShape, sf::CircleShape& mercuryShape, sf::CircleShape& venusShape, sf::CircleShape& earthShape, sf::CircleShape& marsShape, sf::CircleShape& jupiterShape, sf::CircleShape& saturnShape, sf::CircleShape& uranusShape, sf::CircleShape& neptuneShape, sf::RenderWindow& window);
 void edgeQuestion(sf::RenderWindow& window, sf::View& view);
 
 #endif

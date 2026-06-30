@@ -92,29 +92,41 @@ void drawStars(sf::RenderWindow& window, sf::RectangleShape& star)
           }
   }
 
-void orbitPath(sf::VertexArray& trail, Sphere& earth, sf::VertexArray& marsTrail, Sphere& mars, sf::VertexArray& jupiterTrail, Sphere& jupiter, sf::VertexArray& neptuneTrail, Sphere& neptune, sf::RenderWindow& window, float time)
+void orbitPath(sf::VertexArray& mercuryTrail, Sphere& mercury, sf::VertexArray& venusTrail, Sphere& venus,sf::VertexArray& trail, Sphere& earth, sf::VertexArray& marsTrail, Sphere& mars, sf::VertexArray& jupiterTrail, Sphere& jupiter, sf::VertexArray& saturnTrail, Sphere& saturn, sf::VertexArray& uranusTrail, Sphere& uranus, sf::VertexArray& neptuneTrail, Sphere& neptune, sf::RenderWindow& window, float time)
   {
 
         sf::Color colorEarth(static_cast<uint8_t>((sin(time) * 0.5f + 0.5f) * 2.55), static_cast<uint8_t>((sin(time + 2.0f) * 0.25f + 0.5f) * 255),static_cast<uint8_t>((sin(time + 4.0f) * 0.25f + 0.5f) * 2.55));
         sf::Color colorMars(static_cast<uint8_t>((sin(time) * 0.5f + 0.5f) * 255), static_cast<uint8_t>((sin(time + 2.0f) * 0.25f + 0.5f) * 2.55),static_cast<uint8_t>((sin(time + 4.0f) * 0.25f + 0.5f) * 2.55));
+        mercuryTrail.append({sf::Vector2f(static_cast<float>(mercury.pos.x / scale), static_cast<float>(mercury.pos.y / scale))});
+        venusTrail.append({sf::Vector2f(static_cast<float>(venus.pos.x / scale), static_cast<float>(venus.pos.y / scale))});
         trail.append({sf::Vector2f(static_cast<float>(earth.pos.x / scale), static_cast<float>(earth.pos.y / scale))});
         marsTrail.append({sf::Vector2f(static_cast<float>(mars.pos.x / scale), static_cast<float>(mars.pos.y / scale))});
         jupiterTrail.append({sf::Vector2f(static_cast<float>(jupiter.pos.x / scale), static_cast<float>(jupiter.pos.y / scale))});
+        saturnTrail.append({sf::Vector2f(static_cast<float>(saturn.pos.x / scale), static_cast<float>(saturn.pos.y / scale))});
+        uranusTrail.append({sf::Vector2f(static_cast<float>(uranus.pos.x / scale), static_cast<float>(uranus.pos.y / scale))});
         neptuneTrail.append({sf::Vector2f(static_cast<float>(neptune.pos.x / scale), static_cast<float>(neptune.pos.y / scale))});
         trail[trail.getVertexCount() - 1].color = colorEarth;
         marsTrail[marsTrail.getVertexCount() - 1].color = colorMars;
+        window.draw(mercuryTrail);
+        window.draw(venusTrail);
         window.draw(trail);
         window.draw(marsTrail);
         window.draw(jupiterTrail);
+        window.draw(saturnTrail);
+        window.draw(uranusTrail);
         window.draw(neptuneTrail);
   }
 
-void drawBody(sf::CircleShape& sunShape, sf::CircleShape& earthShape, sf::CircleShape& marsShape, sf::CircleShape& jupiterShape, sf::CircleShape& neptuneShape, sf::RenderWindow& window)
+void drawBody(sf::CircleShape& sunShape, sf::CircleShape& mercuryShape, sf::CircleShape& venusShape, sf::CircleShape& earthShape, sf::CircleShape& marsShape, sf::CircleShape& jupiterShape, sf::CircleShape& saturnShape, sf::CircleShape& uranusShape, sf::CircleShape& neptuneShape, sf::RenderWindow& window)
   {
         window.draw(sunShape);
+        window.draw(mercuryShape);
+        window.draw(venusShape);
         window.draw(earthShape);
         window.draw(marsShape);
         window.draw(jupiterShape);
+        window.draw(saturnShape);
+        window.draw(uranusShape);
         window.draw(neptuneShape);
   }
 
