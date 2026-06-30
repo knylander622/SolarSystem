@@ -15,6 +15,6 @@ Clone into repository and change into SolarSystem directory
 Build docker image with:  
 docker build -t solar-system .
 
-Run docker image with:  
+Run docker image with (in linux terminal such as WSL):  
 docker run --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix solar-system
 
